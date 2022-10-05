@@ -1,0 +1,32 @@
+---
+- hosts: "{{ hosts }}"
+  become: true
+  tasks:
+    - name: create users
+      user:
+        name: "{{ item }}"
+        shell: "/bin/bash"
+        comment: "usuario creado por ansible"
+        state: present
+      with_items:
+        - rlujan
+        - dbolivar
+        - aitolive    
+    - name: copy files
+      copy:
+        src: "/var/tmp/{{ item }}"
+        dest: "/var/tmp/{{ item }}"
+        owner: rlujan
+        group: rlujan
+        mode: '0600'
+        remote_src: no
+      with_items:
+        - file1.txt
+        - file2.txt
+        - file3.txt
+    - name: creamos usuarios
+      debug:
+        msg: "usuario {{ item.user }} y con grupo {{ item.group }}"
+      with_items:
+        - { user: 'rlujan', group: 'unix' }
+        - { user: 'dbolivar', group: 'db' }
